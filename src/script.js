@@ -5,7 +5,7 @@ const lists_HTML = (function() {
         let elem = document.createElement('div');
         elem.classList.add('item');
         let name = document.createElement('h5');
-        name.innerText = list.description;
+        name.innerText = list.name;
         let description = document.createElement('p');
         description.innerText = list.description;
         if (list.urgent) {
@@ -31,22 +31,54 @@ const lists_HTML = (function() {
     function showLists(lists){
         for (let i in lists[0]){
             let elem = createHTMLList(lists[0][i]);
-            addElem(elem, 'todo_list')
+            addElem(elem, 'todo_list');
         }
+        console.log('lists')
         for (let i in lists[1]){
             let elem = createHTMLList(lists[1][i]);
-            addElem(elem, 'in_progress_list')
+            addElem(elem, 'in_progress_list');
         }
         for (let i in lists[2]){
             let elem = createHTMLList(lists[2][i]);
-            addElem(elem, 'done_list')
+            addElem(elem, 'done_list');
         }
     }
 
     function start(){
-        let add = document.getElementById('add');
-        add.addEventListener('click', function(){});
+        createAddButton();
     }
+
+    function createAddButton(){
+        let add = document.getElementById('add');
+        add.addEventListener('click', function(){openAddModal()});
+
+        let addInput = document.getElementById('add_input');
+        addInput.addEventListener('click', function(){addHTML()});
+
+    }
+
+    function openAddModal(){
+        let dialog = document.querySelector('dialog');
+        dialog.showModal();
+    }
+
+    function addHTML(){
+        let form = document.getElementById('formular');
+        let formdata = new FormData(form);
+        console.log(formdata)
+        let name = formdata.get('name_input');
+        let description = formdata.get('description_input');
+        let date = formdata.get('date_input');
+        let urgent = formdata.get('urgent_input');
+        let important = formdata.get('important_input');
+        lists.add(name, description, date, urgent, important, lists.getTodoList());
+        showLists(lists.getLists());
+
+        let dialog = document.querySelector('dialog');
+        dialog.close();
+    }
+
+    return { start };
 })();
 
 
@@ -54,6 +86,10 @@ const lists = (function (){
     let todo_list = [];
     let in_progress_list = [];
     let done_list = [];
+
+    function getTodoList(){
+        return todo_list;
+    }
 
     function create(name, description, date, urgent, important) {
         description = description ? description : '(no description)';
@@ -85,8 +121,9 @@ const lists = (function (){
         return  [ todo_list, in_progress_list, done_list ];
     }
 
-    return { forward, add, getLists };
+    return { forward, add, getLists, getTodoList };
 })();
 
+lists_HTML.start();
 
 

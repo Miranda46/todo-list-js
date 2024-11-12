@@ -13,26 +13,26 @@
             <h2>Complete</h2>
         </nav>
     </header>
+    <dialog>
+        <h5>Add a new task</h5>
+        <form action="#" id="formular">
+            <fieldset>
+                <label for="name_input">Name</label>
+                <input type="text" name="name_input" id="name_input">
+                <label for="description_input">Description</label>
+                <input type="text" name="description_input" id="description_input">
+                <label for="date_input">Due date</label>
+                <input type="date" name="date_input" id="date_input">
+                <label for="important_input">Is it important?</label>
+                <input type="checkbox" name="important_input" id="important_input">
+                <label for="urgent_input">Is it urgent?</label>
+                <input type="checkbox" name="urgent_input" id="urgent_input">
+                <button type="button" id="add_input">Add</button>
+            </fieldset>
+        </form>
+    </dialog>
     <div id="content">
-        <dialog>
-            <h5>Add a new task</h5>
-            <form action="#" id="formular">
-                <fieldset>
-                    <label for="name_input">Name</label>
-                    <input type="text" name="name_input" id="name_input">
-                    <label for="description_input">Description</label>
-                    <input type="text" name="description_input" id="description_input">
-                    <label for="date_input">Due date</label>
-                    <input type="date" name="date_input" id="date_input">
-                    <label for="important_input">Is it important?</label>
-                    <input type="checkbox" name="important_input" id="important_input">
-                    <label for="urgent_input">Is it urgent?</label>
-                    <input type="checkbox" name="urgent_input" id="urgent_input">
-                    <button type="button" id="add_input">Add</button>
-                </fieldset>
-            </form>
-        </dialog>
-        <div id="todo">
+        <div id="todo" class="list">
             <h3>TO-DO</h3>
             <div id="todo_list">
                 <div id="add" class="item">
@@ -41,12 +41,12 @@
             </div>
 
         </div>
-        <div id="in_progress">
+        <div id="in_progress" class="list">
             <h3>IN PROGRESS</h3>
             <div id="in_progress_list"></div>
 
         </div>
-        <div id="done">
+        <div id="done" class="list">
             <h3>DONE</h3>
             <div id="done_list"></div>
 

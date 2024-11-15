@@ -59,7 +59,7 @@ nav {
     max-width: 400px;
     padding: 5px 10px;
     border-radius: 5%;
-    border: 3px solid black;
+    border: 1px solid rgb(90, 88, 86, 0.356);
     margin-bottom: 5px;
     background-color: azure;
 }

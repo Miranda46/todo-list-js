@@ -18,7 +18,8 @@ const lists_HTML = (function () {
         date.innerText = 'Due date: ' + list.date;
         let next = document.createElement('button');
         next.innerText = 'Next Stage';
-        next.addEventListener('click', function () { forwardHTML(index, listName) })
+        next.setAttribute('index', index);
+        next.addEventListener('click', function (event) { forwardHTML(event, listName) })
 
 
         elem.appendChild(name);
@@ -35,7 +36,6 @@ const lists_HTML = (function () {
     }
 
     function showLists(lists) {
-        console.log(lists);
         document.getElementById('todo_list').innerHTML = '';
         document.getElementById('in_progress_list').innerHTML = '';
         document.getElementById('done_list').innerHTML = '';
@@ -56,6 +56,12 @@ const lists_HTML = (function () {
 
     function start() {
         createAddButton();
+        if (localStorage.getItem('todos')) { 
+            let listado = JSON.parse(localStorage.getItem('todos'));
+            lists.setLists(listado.listToSave);
+            showLists(lists.getLists());
+        }
+
     }
 
     function createAddButton() {
@@ -75,7 +81,6 @@ const lists_HTML = (function () {
     function addHTML() {
         let form = document.getElementById('formular');
         let formdata = new FormData(form);
-        console.log(formdata)
         let name = formdata.get('name_input');
         let description = formdata.get('description_input');
         let date = formdata.get('date_input');
@@ -85,10 +90,12 @@ const lists_HTML = (function () {
         showLists(lists.getLists());
 
         let dialog = document.querySelector('dialog');
+        form.reset();
         dialog.close();
     }
 
-    function forwardHTML(index, listName) {
+    function forwardHTML(event, listName) {
+        let index = event.target.getAttribute('index');
         lists.forward(index, listName);
         showLists(lists.getLists());
     }
@@ -133,7 +140,6 @@ const lists = (function () {
     }
 
     function addToList(todo, list) {
-        console.log(todo)
         if (list.length == 0) {
             list.push(todo);
         }
@@ -144,34 +150,49 @@ const lists = (function () {
             list.splice(0, 0, todo);
         }
         else if (todo.urgent) {
+            let added = false;
             for (let i in list) {
                 if (!list[i].important) {
                     list.splice(i, 0, todo);
+                    added = true
                     break
                 }
             }
+            if ( !added ) list.push(todo);
         }
+        let listToSave = getLists();
+        listToSave = JSON.stringify({ listToSave });
+        localStorage.setItem('todos', listToSave);
     }
 
     function forward(index, listName) {
         if (listName == 'todo_list') {
-            let todo = todo_list.splice(todo_list[index], 1);
+            let todo = todo_list.splice(index, 1);
             addToList(todo[0], in_progress_list);
         }
         else if (listName == 'in_progress_list') {
-            let todo = in_progress_list.splice(in_progress_list[index], 1);
+            let todo = in_progress_list.splice(index, 1);
             addToList(todo[0], done_list);
         }
         else if (listName == 'done_list') {
-            let todo = done_list.splice(done_list[index]);
+            let todo = done_list.splice(index, 1);
         }
+        let listToSave = getLists();
+        listToSave = JSON.stringify({ listToSave });
+        localStorage.setItem('todos', listToSave);
     }
 
     function getLists() {
         return [todo_list, in_progress_list, done_list];
     }
 
-    return { forward, add, getLists, getTodoList };
+    function setLists(lists) { 
+        todo_list = lists[0];
+        in_progress_list = lists[1];
+        done_list = lists[2];
+    }
+
+    return { forward, add, getLists, getTodoList, setLists };
 })();
 
 lists_HTML.start();
